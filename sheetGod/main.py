@@ -1,14 +1,19 @@
+import os
 import sys
+import platform
 
 from .sheet import Sheet
-from .commands import Commands
+from .arguments import Arguments
 
 
 class sheetGod():
 	AllowedCommands = [
 		"help",
 		"show",
-		"open"
+		"open",
+		"quit",
+		"clear",
+		"cls"
 	]
 	sheet = Sheet(AllowedCommands)
 
@@ -22,27 +27,42 @@ class sheetGod():
 		print("\n")
 
 		self.CLI_IS_RUNNING = True
+		self.sheet.setManualCommands([
+			{
+				"name": "exit / quit",
+				"help": "Use this to quit sheetGod CLI",
+			},
+			{
+				"name": "clear / cls",
+				"help": "Use this command to clear the console."
+			}
+		])
 
 		while self.CLI_IS_RUNNING:
 			# CLI Interface Loop
 			cmd = input("$ ")
-			# If user typed exit or quit, exit immediately.
-			if cmd == "exit" or cmd == "quit":
-				print("Goodbye!")
-				self.CLI_IS_RUNNING = False
-				break
 
 			cmdArray = cmd.split(" ")
 			mainCommand = cmdArray[0]
 			cmdArray.remove(cmdArray[0])
-			# Run command in Sheet class
 
+			# If user typed exit or quit, exit immediately.
 			if mainCommand in self.AllowedCommands:
-				if cmd != "":
+				if mainCommand == "exit" or mainCommand == "quit":
+					print("Goodbye!")
+					self.CLI_IS_RUNNING = False
+					break
+				elif mainCommand == "clear" or mainCommand == "cls":
+					operating_system = platform.system()
+					clear_command = "clear"
+					if "Windows" in operating_system:
+						clear_command = "cls"
+					os.system(clear_command)
+				elif cmd != "":
 					try:
 						getattr(self.sheet, mainCommand)(*cmdArray)
 					except AttributeError as err:
-						print("Nope.")
+						print(err)
 						getattr(self.sheet, "help")(cmd)
 			else:
 				print("Command does not exist.")
@@ -73,4 +93,4 @@ class sheetGod():
 		]
 		self.commandList = userSubmittedCMDLIST + self.commandList
 
-		self.commands = Commands(sys.argv, self.commandList)
+		self.commands = Arguments(sys.argv, self.commandList)

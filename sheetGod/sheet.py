@@ -21,10 +21,18 @@ class Sheet():
 		else:
 			print("Please provide a filename when using the 'open' command.")
 
+	def show(self):
+		if self.sheet:
+			print(self.sheet)
+		else:
+			print("None")
+
 	def help(self, item=None):
 		print("Commands:")
-		# for cmd in self.AllowedCommands:
-		# 	print(signature(self.fuck))
+
+		for cmd in self.manual_commands:
+			print("  * " + cmd['name'])
+
 		members = [attr for attr in dir(Sheet)]
 		for item in members:
 			if item in self.AllowedCommands:
@@ -39,14 +47,11 @@ class Sheet():
 
 				print("  * " + command_details)
 
-	def show(self):
-		if self.sheet:
-			print(self.sheet)
-		else:
-			print("None")
-
 	def setSheet(self, sheet):
 		self.sheet = sheet
 
-	def __init__(self, AllowedCommands):
+	def setManualCommands(self, manual_commands):
+		self.manual_commands = manual_commands
+
+	def __init__(self, AllowedCommands, manual_commands=[]):
 		self.AllowedCommands = AllowedCommands

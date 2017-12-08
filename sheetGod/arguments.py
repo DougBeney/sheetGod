@@ -1,4 +1,4 @@
-class Commands():
+class Arguments():
 	def cmd_help(self):
 		print("Command options:")
 		print("---------------")
