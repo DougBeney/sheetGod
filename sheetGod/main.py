@@ -9,11 +9,12 @@ from .arguments import Arguments
 class sheetGod():
 	AllowedCommands = [
 		"help",
-		"show",
-		"open",
 		"quit",
 		"clear",
-		"cls"
+		"cls",
+		"show",
+		"open",
+		"deleterow"
 	]
 	sheet = Sheet(AllowedCommands)
 

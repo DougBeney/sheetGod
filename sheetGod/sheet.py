@@ -21,6 +21,15 @@ class Sheet():
 		else:
 			print("Please provide a filename when using the 'open' command.")
 
+	def deleterow(self, UseRegex, ColumnHeader):
+		if UseRegex == 'false' or UseRegex == 'False':
+			UseRegex = False
+		elif UseRegex == 'true' or UseRegex == 'True':
+			regex = True
+		if UseRegex:
+			print(regex)
+			print(ColumnHeader)
+
 	def show(self):
 		if self.sheet:
 			print(self.sheet)
