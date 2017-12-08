@@ -1,5 +1,6 @@
 from . import main
 
-
-def init():
+try:
 	main.sheetGod()
+except KeyboardInterrupt as err:
+	print("\n")

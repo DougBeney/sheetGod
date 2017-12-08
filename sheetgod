@@ -1,8 +1,0 @@
-#! /usr/bin/python3
-
-# This file is for launching sheetGod
-
-import sheetGod
-
-if __name__ == '__main__':
-	sheetGod.init()

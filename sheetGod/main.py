@@ -1,61 +1,74 @@
 import sys
-import pyexcel
 
+from .sheet import Sheet
 from .commands import Commands
 
 
 class sheetGod():
-	theFile = None
-	theSheet = None
-	isLoaded = False
-	test1 = "itWorked"
-
-	def loadSheet(self, file_name=None):
-		if not file_name:
-			file_name = input("Enter a filename: ")
-
-		try:
-			sheet = pyexcel.get_sheet(file_name=file_name)
-		except:
-			print("Can't read file [%s]..." % file_name)
-			return self.loadSheet()
-		else:
-			return sheet
-
-	def cleanse_func(self, v):
-		v = str(v)
-		v = v.replace("&nbsp;", "")
-		v = v.rstrip().strip()
-		return v
+	AllowedCommands = [
+		"help",
+		"show",
+		"open"
+	]
+	sheet = Sheet(AllowedCommands)
 
 	def InteractiveCLI(self):
-		# Ask user what file they would like to load
-		file_name = None
-		if len(sys.argv) > 1:
-			file_name = sys.argv[1]
+		print("sheetGod v.0.0.1 (by Doug Beney)")
 
-		self.theSheet = self.loadSheet(file_name)
-		self.theSheet.map(self.cleanse_func)
+		print("\n")
+		print("* Website: https://sheetgod.dougie.io")
+		print("* Docs: https://sheetgod.dougie.io/docs")
+		print("* Contact the dev: https://sheetgod.dougie.io/contact")
+		print("\n")
+
+		self.CLI_IS_RUNNING = True
+
+		while self.CLI_IS_RUNNING:
+			# CLI Interface Loop
+			cmd = input("$ ")
+			# If user typed exit or quit, exit immediately.
+			if cmd == "exit" or cmd == "quit":
+				print("Goodbye!")
+				self.CLI_IS_RUNNING = False
+				break
+
+			cmdArray = cmd.split(" ")
+			mainCommand = cmdArray[0]
+			cmdArray.remove(cmdArray[0])
+			# Run command in Sheet class
+
+			if mainCommand in self.AllowedCommands:
+				if cmd != "":
+					try:
+						getattr(self.sheet, mainCommand)(*cmdArray)
+					except AttributeError as err:
+						print("Nope.")
+						getattr(self.sheet, "help")(cmd)
+			else:
+				print("Command does not exist.")
+				print("¯\_(ツ)_/¯")
+				print("Type 'help' for a list of commands.")
 
 		# Printing header columns
-		print("Columns:")
-		for column in self.theSheet.row[0]:
-			print("- " + column)
-
-	def printThing(self):
-		print("testt " + self.test1)
+		# print("Columns:")
+		# for column in self.theSheet.row[0]:
+		# 	print("- " + column)
 
 	def __init__(self, userSubmittedCMDLIST=[]):
-		print("sheetGod v.0.0.1")
-		print("Made by Doug Beney -- https://dougie.io/")
-
 		self.commandList = [
 			{
-				"Name": "CLI Mode",
-				"Description": "Uses CLI instead of GUI.",
+				"name": "CLI Mode",
+				"description": "Uses CLI instead of GUI.",
 				"type": "generic",
 				"variants": ("-c", "--cli"),
 				"function": self.InteractiveCLI,
+			},
+			{
+				"name": "Open File",
+				"description": "(Example usage: '--open=myfile.csv')",
+				"type": "variable",
+				"variants": ("-o", "--open"),
+				"function": self.sheet.open,
 			},
 		]
 		self.commandList = userSubmittedCMDLIST + self.commandList

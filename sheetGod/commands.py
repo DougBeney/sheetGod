@@ -1,8 +1,12 @@
 class Commands():
 	def cmd_help(self):
-		print("Commands for sheetGod:")
+		print("Command options:")
+		print("---------------")
 		for cmd in self.commandList:
-			print(cmd)
+			print(str(cmd['variants']))
+			print("-- " + cmd['name'])
+			print("-- " + cmd['description'])
+			print("---------------")
 
 	def processCommand(self, cmd, value=None):
 		for commandListItem in self.commandList:
@@ -15,6 +19,7 @@ class Commands():
 					return
 
 	def checkCommands(self):
+		# Process variables first
 		for cmd in self.argv:
 			if cmd is not self.argv[0]:
 				# Looping through commands inputed
@@ -22,20 +27,23 @@ class Commands():
 				if "=" in cmd:
 					splitcmd = cmd.split("=")
 					self.processCommand(splitcmd[0], splitcmd[1])
-				else:
+		# Then process functions
+		for cmd in self.argv:
+			if cmd is not self.argv[0]:
+				# Looping through commands inputed
+				cmd = str(cmd)
+				if "=" not in cmd:
 					self.processCommand(cmd)
 
-	def runCommand(self, cmd, value):
-		print("Toggle Type")
+	def addCommands(self, cmds):
+		self.commandList = self.commandList + cmds
 
 	# Command List
-	# Note: Types of commands availible: [toggle, variable, detail]
-
 	def __init__(self, argv, command_list):
 		self.commandList = [
 			{
-				"Name": "Help",
-				"Description": "Shows the commands of sheetGod",
+				"name": "Help",
+				"description": "Shows the commands of sheetGod",
 				"type": "generic",
 				"variants": ("-h", "--help"),
 				"function": self.cmd_help,
